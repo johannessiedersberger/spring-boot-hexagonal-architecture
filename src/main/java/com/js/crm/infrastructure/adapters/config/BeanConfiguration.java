@@ -1,6 +1,6 @@
 package com.js.crm.infrastructure.adapters.config;
 
-import com.js.crm.application.ports.out.CustomerRepositoryAdapter;
+import com.js.crm.application.ports.out.CustomerRepositoryPort;
 import com.js.crm.domain.service.CustomerService;
 import com.js.crm.infrastructure.adapters.out.mapper.CustomerMapper;
 import com.js.crm.infrastructure.adapters.out.repository.CustomerDBRepository;
@@ -28,7 +28,7 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CustomerService CustomerService(CustomerRepositoryAdapter customerRepository) {
+    public CustomerService CustomerService(CustomerRepositoryPort customerRepository) {
         return new CustomerService(customerRepository);
     }
 }
