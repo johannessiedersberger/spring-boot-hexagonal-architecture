@@ -1,6 +1,22 @@
 spring:
   application:
     name: crm
+  jpa:
+    properties:
+      hibernate:
+        default_schema: crm
+        jdbc.batch_size: 50
+        order_inserts: true
+        order_updates: true
+        # If you wan't to see stats:
+        #  generate_statistics: true
+        jdbc.lob.non_contextual_creation: true #https://stackoverflow.com/a/46788162
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: ${DATASOURCE_URL:jdbc:postgresql://localhost:5432/postgres}
@@ -11,6 +27,13 @@ spring:
     baseline-on-migrate: true
     baseline-version: 0
     table: crm_schema_version
+
+crm:
+  security:
+    basic-auth:
+      api:
+        user: admin
+        password: password
 
 kind: Application
 
