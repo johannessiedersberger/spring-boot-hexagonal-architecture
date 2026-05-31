@@ -1,7 +1,7 @@
 package com.js.crm.domain.service;
 
 import com.js.crm.application.ports.in.CustomerUseCase;
-import com.js.crm.application.ports.out.CustomerRepositoryAdapter;
+import com.js.crm.application.ports.out.CustomerRepositoryPort;
 import com.js.crm.domain.exception.CustomerNotFoundException;
 import com.js.crm.domain.model.Customer;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CustomerService implements CustomerUseCase {
 
-    private final CustomerRepositoryAdapter customerRepository;
+    private final CustomerRepositoryPort customerRepository;
 
 
     @Override
