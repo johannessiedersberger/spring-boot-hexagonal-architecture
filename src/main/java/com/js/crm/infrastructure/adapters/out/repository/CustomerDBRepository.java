@@ -23,6 +23,13 @@ public class CustomerDBRepository implements CustomerRepositoryPort {
     }
 
     @Override
+    public Customer udpateCustomer(Customer customer) {
+        CustomerEntity customerEntity = customerMapper.toEntity(customer);
+        customerJPARepository.save(customerEntity);
+        return customerMapper.toCustomer(customerEntity);
+    }
+
+    @Override
     public Optional<Customer> getCustomerById(Long customerId) {
         Optional<CustomerEntity> customerEntity = customerJPARepository.findById(customerId);
 

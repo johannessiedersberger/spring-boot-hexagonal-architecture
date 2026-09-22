@@ -7,4 +7,8 @@ public interface CustomerUseCase {
     Customer createCustomer(Customer customer);
 
     Customer getCustomerById(Long customerId);
+
+    Customer updateCustomer(Customer customer);
+
+    void DeleteCustomerById(Long customerId);
 }

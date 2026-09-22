@@ -8,5 +8,7 @@ public interface CustomerRepositoryPort {
 
     Customer saveCustomer(Customer customer);
 
+    Customer udpateCustomer(Customer customer);
+
     Optional<Customer> getCustomerById(Long customerId);
 }

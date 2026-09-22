@@ -22,4 +22,19 @@ public class CustomerService implements CustomerUseCase {
         return customerRepository.getCustomerById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException("No customer with id: " + customerId));
     }
+
+    @Override
+    public Customer updateCustomer(Customer customerToUpdate) {
+
+        if (customerToUpdate.getId() != null) {
+            throw new IllegalArgumentException("ID must not be empty");
+        }
+
+        return customerRepository.udpateCustomer(customerToUpdate);
+    }
+
+    @Override
+    public void DeleteCustomerById(Long customerId) {
+
+    }
 }
