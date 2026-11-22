@@ -38,7 +38,7 @@ The following sequence illustrates how a request travels through the layers when
 
 1. **Receive Request:** The REST Controller *(Inbound Adapter)* receives an incoming `POST` request.
 2. **Invoke Use Case:** The controller maps the request payload and calls the `CustomerUseCase` *(Inbound Port)*.
-3. **Execute Business Logic:** `CustomerService` *(Domain Service)* implements the `CreateOrderUseCase` and executes the workflow:
+3. **Execute Business Logic:** `CustomerService` *(Domain Service)* implements the `CustomerUseCase` and executes the workflow:
    * Validates the input against core business rules.
    * Instantiates the `Customer` domain entity.
    * Persists the customer by calling the `CustomerDBRepository` *(Outbound Port)*.
