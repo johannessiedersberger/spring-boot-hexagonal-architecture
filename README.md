@@ -1,55 +1,66 @@
-# spring-boot-hexagonal-architecture
+# Spring Boot Hexagonal Architecture
 
-The hexagonal architecture uses ports and adapters that connect the core business logic of an application to the outside world.
-    
-- In the inside you find the core business logic (domain)
-- The ports are interfaces that define how the application can interact with outside tools
-- The adapters translate between the outside and the ports used by the application
-- In the outside are external systems like REST-Clients, Databases or Message Brokers
+A reference implementation of **Hexagonal Architecture** (also known as the **Ports and Adapters** pattern) built with Spring Boot. This architectural style isolates core business logic from external frameworks, databases, and delivery mechanisms, making the application easier to test, maintain, and evolve.
 
+![Hexagonal Architecture Diagram](https://www.happycoders.eu/wp-content/uploads/2023/06/hexagonal-architecture-java.v4-800x601.png)
+*Source: [HappyCoders.eu](https://www.happycoders.eu/)*
 
-https://www.happycoders.eu/wp-content/uploads/2023/06/hexagonal-architecture-java.v4-800x601.png
+## Core Concepts
 
+The architecture is structured around four distinct layers, enforcing strict dependency rules where dependencies always point inward toward the domain:
 
-1. Adapter
+* **Domain (Core):** Contains the core business logic, entities, and domain rules. It has zero dependencies on external frameworks or infrastructure.
+* **Ports:** Framework-independent interfaces defined inside the core that dictate *what* the application can do, without specifying *how*.
+* **Adapters:** Components that translate between external technologies and the application's ports (e.g., mapping JSON payloads to domain objects).
+* **External Systems:** Third-party infrastructure such as REST clients, relational databases, and message brokers.
 
-   An adapter connects the outside world to the applications core logic (e.g. HTTP requests, database access)
+---
 
-   The adapter converts into formats that can be processed by the domain (JSON → Domain Objects)
+## Architecture Components
 
-   Hide the external technology details from the core business logic
+### 1. Ports
+Ports form the boundary of the hexagon. They are pure Java interfaces defined within the core application/domain layer and contain no implementation details.
 
-   There are two types of adapters, Driving Adapters (Inbound) and Driven Adapters (Outbound)
+* **Inbound (Driving) Ports:** Define the use cases exposed by the application (e.g., `CreateOrderUseCase`).
+* **Outbound (Driven) Ports:** Define the interfaces required by the application to communicate with external dependencies (e.g., `OrderRepository`).
 
-   The Driving Adapter (Inbound) could be a REST-Controller that receives an API-Call and then calls the port (use case interface)
+### 2. Adapters
+Adapters sit outside the core and handle communication with the outside world, hiding technical and framework-specific details from the domain logic.
 
-   The Driven Adapters (Outbound) are used by the application to interact with external systems (e.g. Databases or message brokers)
+* **Driving (Inbound) Adapters:** Trigger application behavior by invoking Inbound Ports. *Example:* A Spring `@RestController` that accepts an HTTP request, maps the DTO to a domain command, and calls a use case.
+* **Driven (Outbound) Adapters:** Implement Outbound Ports to interact with external infrastructure. *Example:* A persistence adapter (`PostgresOrderRepository`) that maps domain entities to JPA entities and saves them to PostgreSQL.
 
-2. Port
+---
 
-   A Port is an interface that defines how the core application interacts with the outside. The Ports are the edges of the hexagon and only a definition of functionality without implementation
+## Example Flow: Creating an Order via REST
 
-   Is defined inside the core (application/domain layer)
+The following sequence illustrates how a request travels through the layers when creating a new order:
 
-   A Port is independent of any framework
+1. **Receive Request:** The REST Controller *(Inbound Adapter)* receives an incoming `POST` request.
+2. **Invoke Use Case:** The controller maps the request payload and calls the `CreateOrderUseCase` *(Inbound Port)*.
+3. **Execute Business Logic:** `CreateOrderService` *(Domain Service)* implements the `CreateOrderUseCase` and executes the workflow:
+   * Validates the input against core business rules.
+   * Instantiates the `Order` domain entity.
+   * Persists the order by calling the `OrderRepository` *(Outbound Port)*.
+4. **Persist Data:** `PostgresOrderRepository` *(Outbound Adapter)* implements `OrderRepository` and writes the record to the database.
 
-   Focused on what the system should do, not how
-
-
-3. Example flow for creation of an order via REST
-
-   Controller (Inbound adapter) receives POST-Request
-
-   Controller calls the CreateOrderUseCase (Inbound Port)
-
-   The CreateOrderService (Domain Service) is the implementation of the CreateOrderUseCase-Interface (Port)
-
-        Validates Input for Business rules 
-
-        Creates the Order
-
-        saves it via OrderRepository (Outbound Port)
-
-   The PostgresOrderRepository is the implementation of the OrderRepository 
-
-# uml
+```text
+[REST Client] 
+      │ (HTTP POST)
+      ▼
+[OrderController]        ──► Inbound Adapter
+      │
+      ▼
+[CreateOrderUseCase]     ──► Inbound Port (Interface)
+      │
+      ▼
+[CreateOrderService]     ──► Domain / Application Core
+      │
+      ▼
+[OrderRepository]        ──► Outbound Port (Interface)
+      │
+      ▼
+[PostgresOrderRepository]──► Outbound Adapter
+      │
+      ▼
+[(PostgreSQL)]           ──► External System
