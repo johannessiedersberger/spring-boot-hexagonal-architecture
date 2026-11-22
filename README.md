@@ -21,28 +21,28 @@ The architecture is structured around four distinct layers, enforcing strict dep
 ### 1. Ports
 Ports form the boundary of the hexagon. They are pure Java interfaces defined within the core application/domain layer and contain no implementation details.
 
-* **Inbound (Driving) Ports:** Define the use cases exposed by the application (e.g., `CreateOrderUseCase`).
-* **Outbound (Driven) Ports:** Define the interfaces required by the application to communicate with external dependencies (e.g., `OrderRepository`).
+* **Inbound (Driving) Ports:** Define the use cases exposed by the application (e.g., `CustomerUseCase`).
+* **Outbound (Driven) Ports:** Define the interfaces required by the application to communicate with external dependencies (e.g., `CustomerDBRepository`).
 
 ### 2. Adapters
 Adapters sit outside the core and handle communication with the outside world, hiding technical and framework-specific details from the domain logic.
 
 * **Driving (Inbound) Adapters:** Trigger application behavior by invoking Inbound Ports. *Example:* A Spring `@RestController` that accepts an HTTP request, maps the DTO to a domain command, and calls a use case.
-* **Driven (Outbound) Adapters:** Implement Outbound Ports to interact with external infrastructure. *Example:* A persistence adapter (`PostgresOrderRepository`) that maps domain entities to JPA entities and saves them to PostgreSQL.
+* **Driven (Outbound) Adapters:** Implement Outbound Ports to interact with external infrastructure. *Example:* A persistence adapter (`CustomerJPARepository`) that maps domain entities to JPA entities and saves them to PostgreSQL.
 
 ---
 
 ## Example Flow: Creating an CRM Client via REST
 
-The following sequence illustrates how a request travels through the layers when creating a new order:
+The following sequence illustrates how a request travels through the layers when creating a new customer:
 
 1. **Receive Request:** The REST Controller *(Inbound Adapter)* receives an incoming `POST` request.
-2. **Invoke Use Case:** The controller maps the request payload and calls the `CreateOrderUseCase` *(Inbound Port)*.
-3. **Execute Business Logic:** `CreateOrderService` *(Domain Service)* implements the `CreateOrderUseCase` and executes the workflow:
+2. **Invoke Use Case:** The controller maps the request payload and calls the `CustomerUseCase` *(Inbound Port)*.
+3. **Execute Business Logic:** `CustomerService` *(Domain Service)* implements the `CreateOrderUseCase` and executes the workflow:
    * Validates the input against core business rules.
-   * Instantiates the `Order` domain entity.
-   * Persists the order by calling the `OrderRepository` *(Outbound Port)*.
-4. **Persist Data:** `PostgresOrderRepository` *(Outbound Adapter)* implements `OrderRepository` and writes the record to the database.
+   * Instantiates the `Customer` domain entity.
+   * Persists the customer by calling the `CustomerDBRepository` *(Outbound Port)*.
+4. **Persist Data:** `CustomerJPARepository` *(Outbound Adapter)* implements `CustomerDBRepository` and writes the record to the database.
 
 ```text
 [REST Client] 
