@@ -32,7 +32,7 @@ Adapters sit outside the core and handle communication with the outside world, h
 
 ---
 
-## Example Flow: Creating an Order via REST
+## Example Flow: Creating an CRM Client via REST
 
 The following sequence illustrates how a request travels through the layers when creating a new order:
 
@@ -48,19 +48,19 @@ The following sequence illustrates how a request travels through the layers when
 [REST Client] 
       │ (HTTP POST)
       ▼
-[OrderController]        ──► Inbound Adapter
+[CustomerController]        ──► Inbound Adapter
       │
       ▼
-[CreateOrderUseCase]     ──► Inbound Port (Interface)
+[CustomerUseCase]           ──► Inbound Port (Interface)
       │
       ▼
-[CreateOrderService]     ──► Domain / Application Core
+[CustomerService]           ──► Domain / Application Core
       │
       ▼
-[OrderRepository]        ──► Outbound Port (Interface)
+[CustomerDBRepository]      ──► Outbound Port (Interface)
       │
       ▼
-[PostgresOrderRepository]──► Outbound Adapter
+[CustomerJPARepository]     ──► Outbound Adapter
       │
       ▼
-[(PostgreSQL)]           ──► External System
+[(PostgreSQL)]              ──► External System
